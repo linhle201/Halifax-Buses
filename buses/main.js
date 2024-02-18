@@ -12,4 +12,35 @@
         .openPopup();
 
 
+     /* Author: Linh Le - W0476946.
+       Date: Feb 18, 2024.
+       Assignment 3c: transittracker.
+       Option 2: Real time Bus data.
+    */
+
+    //REQ-1: Demonstrate Retrieval of the Required Raw Transit Data
+    
+        //Fetch the flight data
+        fetch(`https://prog2700.up.railway.app/opensky`)
+        .then(response => response.json())
+        .then(json => {
+            console.log(json);
+            convertIntoGeoJsonFormat(json);
+        })
+        console.log(json);
+    
+    
+    //REQ-2: Convert Raw Data into GeoJSON format
+    function convertIntoGeoJsonFormat(json){
+
+    }
+
+    //REQ-3: Plot Markers on Map to Show Position of each Vehicle
+
+    //REQ-4: Add Auto-Refresh Functionality to the Page
+
+    //REQ-5: Additional Functionality
+
+
 })()
+
