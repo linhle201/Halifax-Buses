@@ -21,19 +21,39 @@
     //REQ-1: Demonstrate Retrieval of the Required Raw Transit Data
     
         //Fetch the flight data
-        fetch(`https://prog2700.up.railway.app/opensky`)
+        fetch(`https://prog2700.onrender.com/hrmbuses`)
         .then(response => response.json())
         .then(json => {
             console.log(json);
-            convertIntoGeoJsonFormat(json);
+            //convertIntoGeoJsonFormat(json);//Convert Raw Data into GeoJSON format
         })
-        console.log(json);
     
     
     //REQ-2: Convert Raw Data into GeoJSON format
-    function convertIntoGeoJsonFormat(json){
+    
+    function convertIntoGeoJsonFormat(json){ //https://stackoverflow.com/questions/55496909/how-do-you-convert-normal-geographic-json-coming-from-server-into-geojson
+      const geoJson= {
+          type: "Feature",
+          features: DataTransfer.map(item =>{
+            return {
+              id: item.id,
+              geometry: {
+                type: "Point",
+                coordinates: [item.latitude, item.longitude]
+              },
+              properties: {
+                trip: item.tripId,
+                name: item.name,
+                timestamp: item.timestamp,
+                route: item.routeId,
+                speed: item.speed
+              }
+            }
+          })
+          
+        }
 
-    }
+  }
 
     //REQ-3: Plot Markers on Map to Show Position of each Vehicle
 
