@@ -1,4 +1,3 @@
-const { geoJson } = require("leaflet");
 
 (function(){
 
@@ -27,34 +26,31 @@ const { geoJson } = require("leaflet");
         .then(response => response.json())
         .then(json => {
             console.log(json);
-           // convertIntoGeoJsonFormat(json);//Convert Raw Data into GeoJSON format
+            convertIntoGeoJsonFormat(json);//Convert Raw Data into GeoJSON format
+            console.log(convertIntoGeoJsonFormat(json));
         })
     
     
     //REQ-2: Convert Raw Data into GeoJSON format
-    function convertIntoGeoJsonFormat(json) {
-        const geoJson = {
-          type: "FeatureCollection",
-          features: json.map(item => ({
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [item.vehicle.position.longitude, item.vehicle.position.latitude]
-            },
-            properties: {
-              trip: item.vehicle.trip.tripId,
-              timestamp: item.vehicle.timestamp,
-              route: item.vehicle.trip.routeId,
-              speed: item.vehicle.position.speed,
-              label: item.vehicle.vehicle.label
-            }
-          }))
+    function convertIntoGeoJsonFormat(json){
+        return {
+            type: "FeatureCollection",
+            features: json.entity.map(item => ({
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: [item.vehicle.position.longitude, item.vehicle.position.latitude]
+                },
+                properties: {
+                    trip: item.vehicle.trip.tripId,
+                    timestamp: item.vehicle.timestamp,
+                    route: item.vehicle.trip.routeId,
+                    speed: item.vehicle.position.speed,
+                    label: item.vehicle.vehicle.label
+                }
+            }))
         };
-      
-        console.log(geoJson);
-        return geoJson;
-      }
-    
+    }
 
     //REQ-3: Plot Markers on Map to Show Position of each Vehicle
 
