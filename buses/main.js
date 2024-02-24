@@ -26,7 +26,7 @@
         .then(response => response.json())
         .then(json => {
             const filteredTenRoute = json.entity.filter(item => 
-                parseInt(item.vehicle.trip.routeId, 10) >= 1 && parseInt(item.vehicle.trip.routeId, 10) <= 10
+                parseInt(item.vehicle.trip.routeId) >= 1 && parseInt(item.vehicle.trip.routeId) <= 10
             );
             console.log(filteredTenRoute);
             let data= convertIntoGeoJsonFormat(filteredTenRoute);//Convert Raw Data into GeoJSON format
@@ -36,10 +36,10 @@
     
     
     //REQ-2: Convert Raw Data into GeoJSON format
-    function convertIntoGeoJsonFormat(json){ //https://stackoverflow.com/questions/55887875/how-to-convert-json-to-geojson
+    function convertIntoGeoJsonFormat(filteredTenRoute){ //https://stackoverflow.com/questions/55887875/how-to-convert-json-to-geojson
         return {
             type: "FeatureCollection",
-            features: json.entity.map(item => ({
+            features: filteredTenRoute.map(item => ({
                 type: "Feature",
                 geometry: {
                     type: "Point",
@@ -73,8 +73,20 @@
     }
 
     //REQ-4: Add Auto-Refresh Functionality to the Page
-    //UpdateMarkers();
-    //setInterval(markerOnMap, 5000);
+    function updatingTheMap(){
+        fetch(`https://prog2700.onrender.com/hrmbuses`)
+        .then(response => response.json())
+        .then(json => {
+            const filteredTenRoute = json.entity.filter(item => 
+                parseInt(item.vehicle.trip.routeId) >= 1 && parseInt(item.vehicle.trip.routeId) <= 10
+            );
+            let data= convertIntoGeoJsonFormat(filteredTenRoute);//Convert Raw Data into GeoJSON format
+            markerOnMap(data);
+        })
+    }
+    setInterval(updatingTheMap, 5000);
     //REQ-5: Additional Functionality
+    
+    
 })()
 
