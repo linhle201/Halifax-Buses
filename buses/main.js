@@ -27,7 +27,7 @@
         .then(json => {
             console.log(json);
             let data= convertIntoGeoJsonFormat(json);//Convert Raw Data into GeoJSON format
-            console.log(convertIntoGeoJsonFormat(json));
+            console.log(data);
             markerOnMap(data);
         })
     
@@ -55,23 +55,23 @@
 
     //REQ-3: Plot Markers on Map to Show Position of each Vehicle
     function markerOnMap(data){
-       
+    
         data.features.forEach(feature => {
-        L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]])
+       L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]])
         .addTo(map)
-        .bindPopup(`<p>Vehicle ID:</p> ${feature.properties.label}<br>
-                    <p>Trip ID:</p> ${feature.properties.trip}<br>
-                    <p>Route:</p> ${feature.properties.route}<br>
-                    <p>Timestamp:</p> ${feature.properties.timestamp}<br>
-                    <p>Speed:</p> ${feature.properties.speed}`)
+        .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
+                    <b>Trip ID:</b> ${feature.properties.trip}<br>
+                    <b>Route:</b> ${feature.properties.route}<br>
+                    <b>Timestamp:</b> ${feature.properties.timestamp}<br>
+                    <b>Speed:</b> ${feature.properties.speed}`)
         .openPopup();
+    
         })
     }
 
     //REQ-4: Add Auto-Refresh Functionality to the Page
-    setInterval(markerOnMap, 5000);
+    //UpdateMarkers();
+    //setInterval(markerOnMap, 5000);
     //REQ-5: Additional Functionality
-
-
 })()
 
