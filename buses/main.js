@@ -25,8 +25,11 @@
         fetch(`https://prog2700.onrender.com/hrmbuses`)
         .then(response => response.json())
         .then(json => {
-            console.log(json);
-            let data= convertIntoGeoJsonFormat(json);//Convert Raw Data into GeoJSON format
+            const filteredTenRoute = json.entity.filter(item => 
+                parseInt(item.vehicle.trip.routeId, 10) >= 1 && parseInt(item.vehicle.trip.routeId, 10) <= 10
+            );
+            console.log(filteredTenRoute);
+            let data= convertIntoGeoJsonFormat(filteredTenRoute);//Convert Raw Data into GeoJSON format
             console.log(data);
             markerOnMap(data);
         })
