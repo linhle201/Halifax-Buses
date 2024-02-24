@@ -84,7 +84,7 @@
             markerOnMap(data);
         })
     }
-    setInterval(updatingTheMap, 5000);
+    setInterval(updatingTheMap, 1000);
     //REQ-5: Additional Functionality
     
     
