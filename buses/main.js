@@ -32,7 +32,7 @@
     
     
     //REQ-2: Convert Raw Data into GeoJSON format
-    function convertIntoGeoJsonFormat(json){
+    function convertIntoGeoJsonFormat(json){ //https://stackoverflow.com/questions/55887875/how-to-convert-json-to-geojson
         return {
             type: "FeatureCollection",
             features: json.entity.map(item => ({
@@ -53,9 +53,23 @@
     }
 
     //REQ-3: Plot Markers on Map to Show Position of each Vehicle
+    function markerOnMap(json){
+        let data = convertIntoGeoJsonFormat(json);
+
+        data.features.forEach(feature => {
+        L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]])
+        .addTo(map)
+        .bindPopup(`<p>Vehicle ID:</p> ${feature.properties.label}<br>
+                    <p>Trip ID:</p> ${feature.properties.trip}<br>
+                    <p>Route:</p> ${feature.properties.route}<br>
+                    <p>Timestamp:</p> ${feature.properties.timestamp}<br>
+                    <p>Speed:</p> ${feature.properties.speed}`)
+        .openPopup();
+        })
+    }
 
     //REQ-4: Add Auto-Refresh Functionality to the Page
-
+    setInterval(markerOnMap, 5000);
     //REQ-5: Additional Functionality
 
 
