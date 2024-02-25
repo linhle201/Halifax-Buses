@@ -20,21 +20,25 @@
     */
 
     //REQ-1: Demonstrate Retrieval of the Required Raw Transit Data
-    
+    //REQ-4: Add Auto-Refresh Functionality to the Page
+        let markers = [];
         //Fetch the flight data
+        
+        function updatingTheMap(){
         fetch(`https://prog2700.onrender.com/hrmbuses`)
         .then(response => response.json())
         .then(json => {
             const filteredTenRoute = json.entity.filter(item => 
                 parseInt(item.vehicle.trip.routeId) >= 1 && parseInt(item.vehicle.trip.routeId) <= 10
             );
-            console.log(filteredTenRoute);
             let data= convertIntoGeoJsonFormat(filteredTenRoute);//Convert Raw Data into GeoJSON format
-            console.log(data);
             markerOnMap(data);
+            
         })
-    
-    
+        }
+        updatingTheMap();
+        setInterval(updatingTheMap, 3000);
+       
     //REQ-2: Convert Raw Data into GeoJSON format
     function convertIntoGeoJsonFormat(filteredTenRoute){ //https://stackoverflow.com/questions/55887875/how-to-convert-json-to-geojson
         return {
@@ -47,6 +51,7 @@
                 },
                 properties: {
                     trip: item.vehicle.trip.tripId,
+                    bearing: item.vehicle.position.bearing,
                     timestamp: item.vehicle.timestamp,
                     route: item.vehicle.trip.routeId,
                     speed: item.vehicle.position.speed,
@@ -58,15 +63,20 @@
 
     //REQ-3: Plot Markers on Map to Show Position of each Vehicle
     function markerOnMap(data){
+
+        markers.forEach(marker => map.removeLayer(marker));
+         markers = [];
+
         data.features.forEach(feature => {
-            var busIcon = L.icon({ // Correct the icon path if necessary
-                iconUrl: 'bus.png', // Use forward slashes for web paths
-                iconSize: [30, 28], // Size of the icon
+            //const direction = determineDirection(feature.properties.bearing);
+            let busIcon = L.icon({ 
+                iconUrl: `bus.png`, 
+                iconSize: [28, 25], // Size of the icon
             });
-            const direction = determineDirection(feature.vehicle.position.bearing);
+          
     
             // Apply the icon to the marker correctly
-            L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon })
+           let marker= L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon })
                 .addTo(map)
                 .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
                             <b>Trip ID:</b> ${feature.properties.trip}<br>
@@ -74,34 +84,14 @@
                             <b>Timestamp:</b> ${feature.properties.timestamp}<br>
                             <b>occupancyStatus:</b> ${feature.properties.occupancyStatus}<br>
                             <b>Speed:</b> ${feature.properties.speed}`);
+
+        markers.push(marker);
         });
     }
 
-    //REQ-4: Add Auto-Refresh Functionality to the Page
-    function updatingTheMap(){
-        fetch(`https://prog2700.onrender.com/hrmbuses`)
-        .then(response => response.json())
-        .then(json => {
-            const filteredTenRoute = json.entity.filter(item => 
-                parseInt(item.vehicle.trip.routeId) >= 1 && parseInt(item.vehicle.trip.routeId) <= 10
-            );
-            let data= convertIntoGeoJsonFormat(filteredTenRoute);//Convert Raw Data into GeoJSON format
-            markerOnMap(data);
-        })
-    }
-    setInterval(updatingTheMap, 5000);
-    //REQ-5: Additional Functionality
     
-    function determineDirection(bearing){
-        if (bearing >=0 && bearing < 90) {
-            return 'North'; // North
-        } else if (bearing >= 90 && bearing < 180) {
-            return 'East'; // East
-        } else if (bearing >=180 && bearing < 270) {
-            return 'South'; // South
-        } else {
-            return 'West'; //West
-        }
-    }
+    //REQ-5: Additional Functionality
+
+    
 })()
 
