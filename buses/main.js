@@ -22,18 +22,18 @@
     //REQ-1: Demonstrate Retrieval of the Required Raw Transit Data
     //REQ-4: Add Auto-Refresh Functionality to the Page
         let markers = [];
-        //Fetch the flight data
-        
-        function updatingTheMap(){
+    
+        function updatingTheMap(){   //Fetch the flight data
         fetch(`https://prog2700.onrender.com/hrmbuses`)
         .then(response => response.json())
         .then(json => {
+            console.log(json);
             const filteredTenRoute = json.entity.filter(item => 
                 parseInt(item.vehicle.trip.routeId) >= 1 && parseInt(item.vehicle.trip.routeId) <= 10
             );
+            console.log(filteredTenRoute);
             let data= convertIntoGeoJsonFormat(filteredTenRoute);//Convert Raw Data into GeoJSON format
-            markerOnMap(data);
-            
+            markerOnMap(data);   
         })
         }
         updatingTheMap();
@@ -68,28 +68,25 @@
          markers = [];
 
         data.features.forEach(feature => {
-            //const direction = determineDirection(feature.properties.bearing);
             let busIcon = L.icon({ 
                 iconUrl: `bus.png`, 
                 iconSize: [28, 25], // Size of the icon
             });
-          
-    
-            // Apply the icon to the marker correctly
-           let marker= L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon })
+
+            let rotateBus = (0+ feature.properties.bearing) -5 ;
+            let marker= L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon, rotationAngle: rotateBus })
                 .addTo(map)
                 .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
                             <b>Trip ID:</b> ${feature.properties.trip}<br>
                             <b>Route:</b> ${feature.properties.route}<br>
                             <b>Timestamp:</b> ${feature.properties.timestamp}<br>
+                            <b>Bearing:</b> ${feature.properties.bearing}<br>
                             <b>occupancyStatus:</b> ${feature.properties.occupancyStatus}<br>
                             <b>Speed:</b> ${feature.properties.speed}`);
 
         markers.push(marker);
         });
     }
-
-    
     //REQ-5: Additional Functionality
 
     
