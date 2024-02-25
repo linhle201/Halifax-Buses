@@ -60,6 +60,13 @@
     function markerOnMap(data){
     
         data.features.forEach(feature => {
+
+            var busIcon = L.icon({ //https://leafletjs.com/examples/custom-icons/
+                iconUrl: 'buses/bus.png',
+                iconSize:     [38, 95], // size of the icon
+                iconAnchor:    [19, 47] , // point of the icon which will correspond to marker's location
+                popupAnchor:  [1, -47] // point from which the popup should open relative to the iconAnchor
+            });
        L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]])
         .addTo(map)
         .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
@@ -67,8 +74,8 @@
                     <b>Route:</b> ${feature.properties.route}<br>
                     <b>Timestamp:</b> ${feature.properties.timestamp}<br>
                     <b>Speed:</b> ${feature.properties.speed}`)
-        .openPopup();
-    
+        //.openPopup();
+      
         })
     }
 
@@ -84,9 +91,9 @@
             markerOnMap(data);
         })
     }
-    setInterval(updatingTheMap, 1000);
+    setInterval(updatingTheMap, 5000);
     //REQ-5: Additional Functionality
     
-    
+   
 })()
 
