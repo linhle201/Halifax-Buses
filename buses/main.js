@@ -8,8 +8,8 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-    //L.marker([44.650690, -63.596537]).addTo(map)
-        //.bindPopup('This is a sample popup. You can put any html structure in this including extra bus data. You can also swap this icon out for a custom icon. A png file has been provided for you to use if you wish.')
+    //L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]]).addTo(map)
+       // .bindPopup('This is a sample popup. You can put any html structure in this including extra bus data. You can also swap this icon out for a custom icon. A png file has been provided for you to use if you wish.')
         //.openPopup();
 
 
@@ -58,25 +58,23 @@
 
     //REQ-3: Plot Markers on Map to Show Position of each Vehicle
     function markerOnMap(data){
-    
         data.features.forEach(feature => {
-
-            var busIcon = L.icon({ //https://leafletjs.com/examples/custom-icons/
-                iconUrl: 'buses/bus.png',
-                iconSize:     [38, 95], // size of the icon
-                iconAnchor:    [19, 47] , // point of the icon which will correspond to marker's location
-                popupAnchor:  [1, -47] // point from which the popup should open relative to the iconAnchor
+            var busIcon = L.icon({ // Correct the icon path if necessary
+                iconUrl: 'bus.png', // Use forward slashes for web paths
+                iconSize: [30, 28], // Size of the icon
             });
-       L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]])
-        .addTo(map)
-        .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
-                    <b>Trip ID:</b> ${feature.properties.trip}<br>
-                    <b>Route:</b> ${feature.properties.route}<br>
-                    <b>Timestamp:</b> ${feature.properties.timestamp}<br>
-                    <b>Speed:</b> ${feature.properties.speed}`)
-        //.openPopup();
-      
-        })
+            const direction = determineDirection(feature.vehicle.position.bearing);
+    
+            // Apply the icon to the marker correctly
+            L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon })
+                .addTo(map)
+                .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
+                            <b>Trip ID:</b> ${feature.properties.trip}<br>
+                            <b>Route:</b> ${feature.properties.route}<br>
+                            <b>Timestamp:</b> ${feature.properties.timestamp}<br>
+                            <b>occupancyStatus:</b> ${feature.properties.occupancyStatus}<br>
+                            <b>Speed:</b> ${feature.properties.speed}`);
+        });
     }
 
     //REQ-4: Add Auto-Refresh Functionality to the Page
@@ -94,6 +92,16 @@
     setInterval(updatingTheMap, 5000);
     //REQ-5: Additional Functionality
     
-   
+    function determineDirection(bearing){
+        if (bearing >=0 && bearing < 90) {
+            return 'North'; // North
+        } else if (bearing >= 90 && bearing < 180) {
+            return 'East'; // East
+        } else if (bearing >=180 && bearing < 270) {
+            return 'South'; // South
+        } else {
+            return 'West'; //West
+        }
+    }
 })()
 
