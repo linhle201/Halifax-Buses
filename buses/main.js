@@ -37,7 +37,7 @@
         })
         }
         updatingTheMap();
-        setInterval(updatingTheMap, 3000);
+        setInterval(updatingTheMap, 2000);
        
     //REQ-2: Convert Raw Data into GeoJSON format
     function convertIntoGeoJsonFormat(filteredTenRoute){ //https://stackoverflow.com/questions/55887875/how-to-convert-json-to-geojson
@@ -70,10 +70,12 @@
         data.features.forEach(feature => {
             let busIcon = L.icon({ 
                 iconUrl: `bus.png`, 
-                iconSize: [28, 25], // Size of the icon
+                iconSize: [28, 28], // size of the icon
+        iconAnchor: [12, 12], // point of the icon which will correspond to marker's location
+       
             });
 
-            let rotateBus = (0+ feature.properties.bearing) -5 ;
+            let rotateBus = (0+ feature.properties.bearing)-5 ;
             let marker= L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon, rotationAngle: rotateBus })
                 .addTo(map)
                 .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
