@@ -39,7 +39,7 @@
         updatingTheMap();
         setInterval(updatingTheMap, 2000);
        
-    //REQ-2: Convert Raw Data into GeoJSON format
+    //REQ-2: Convert Raw Data into GeoJSON format //https://leafletjs.com/examples/geojson/
     function convertIntoGeoJsonFormat(filteredTenRoute){ //https://stackoverflow.com/questions/55887875/how-to-convert-json-to-geojson
         return {
             type: "FeatureCollection",
@@ -71,11 +71,11 @@
             let busIcon = L.icon({ 
                 iconUrl: `bus.png`, 
                 iconSize: [28, 28], // size of the icon
-        iconAnchor: [12, 12], // point of the icon which will correspond to marker's location
+                iconAnchor: [12, 14], // point of the icon which will correspond to marker's location
        
             });
 
-            let rotateBus = (0+ feature.properties.bearing)-5 ;
+            let rotateBus = (0+ feature.properties.bearing)- 7;
             let marker= L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon, rotationAngle: rotateBus })
                 .addTo(map)
                 .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
@@ -84,13 +84,12 @@
                             <b>Timestamp:</b> ${feature.properties.timestamp}<br>
                             <b>Bearing:</b> ${feature.properties.bearing}<br>
                             <b>occupancyStatus:</b> ${feature.properties.occupancyStatus}<br>
-                            <b>Speed:</b> ${feature.properties.speed}`);
-
+                            <b>Speed:</b> ${feature.properties.speed}`)
+                
         markers.push(marker);
         });
     }
     //REQ-5: Additional Functionality
-
-    
+  
 })()
 
