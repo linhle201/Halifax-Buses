@@ -9,8 +9,8 @@
         }).addTo(map);
 
     //L.marker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]]).addTo(map)
-       // .bindPopup('This is a sample popup. You can put any html structure in this including extra bus data. You can also swap this icon out for a custom icon. A png file has been provided for you to use if you wish.')
-        //.openPopup();
+        //.bindPopup('This is a sample popup. You can put any html structure in this including extra bus data. You can also swap this icon out for a custom icon. A png file has been provided for you to use if you wish.')
+        //s.openPopup();
 
 
      /* Author: Linh Le - W0476946.
@@ -21,23 +21,24 @@
 
     //REQ-1: Demonstrate Retrieval of the Required Raw Transit Data
     //REQ-4: Add Auto-Refresh Functionality to the Page
-        let markers = [];
+       let markers = [];// Define an array to store markers
     
         function updatingTheMap(){   //Fetch the flight data
         fetch(`https://prog2700.onrender.com/hrmbuses`)
         .then(response => response.json())
         .then(json => {
             console.log(json);
-            const filteredTenRoute = json.entity.filter(item => 
+            const filteredTenRoute = json.entity.filter(item => // Filter the bus data from routes 1 to 10
                 parseInt(item.vehicle.trip.routeId) >= 1 && parseInt(item.vehicle.trip.routeId) <= 10
             );
             console.log(filteredTenRoute);
             let data= convertIntoGeoJsonFormat(filteredTenRoute);//Convert Raw Data into GeoJSON format
-            markerOnMap(data);   
+            markerOnMap(data);   // Plot markers on the map
+            setTimeout(updatingTheMap, 15000);
         })
         }
-        updatingTheMap();
-        setInterval(updatingTheMap, 2000);
+        updatingTheMap();// Call the function to update the map 
+       
        
     //REQ-2: Convert Raw Data into GeoJSON format //https://leafletjs.com/examples/geojson/
     function convertIntoGeoJsonFormat(filteredTenRoute){ //https://stackoverflow.com/questions/55887875/how-to-convert-json-to-geojson
@@ -64,19 +65,23 @@
     //REQ-3: Plot Markers on Map to Show Position of each Vehicle
     function markerOnMap(data){
 
-        markers.forEach(marker => map.removeLayer(marker));
-         markers = [];
-
+         // Remove existing markers from the map //https://gis.stackexchange.com/questions/312016/openlayers-how-do-i-remove-a-layer-based-on-a-value
+        markers.forEach(marker => map.removeLayer(marker));//https://www.youtube.com/watch?v=wHKiG6xDdgU
+        markers = [];
+        // Add markers for each bus
         data.features.forEach(feature => {
+
+            //Add icon for each bus and size
+            //https://leafletjs.com/examples/custom-icons/
             let busIcon = L.icon({ 
                 iconUrl: `bus.png`, 
-                iconSize: [28, 28], // size of the icon
-                iconAnchor: [12, 14], // point of the icon which will correspond to marker's location
+                iconSize: [30, 30], // size of the icon
+                iconAnchor: [16, 20], // point of the icon which will correspond to marker's location
        
             });
-
-            let rotateBus = (0+ feature.properties.bearing)- 7;
-            let marker= L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon, rotationAngle: rotateBus })
+         
+            // Create marker for each bus
+            let marker= L.marker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], { icon: busIcon, rotationAngle: feature.properties.bearing-7 })//Display icon and rotate the bus direction as it routes basing on bearing
                 .addTo(map)
                 .bindPopup(`<b>Vehicle ID:</b> ${feature.properties.label}<br>
                             <b>Trip ID:</b> ${feature.properties.trip}<br>
